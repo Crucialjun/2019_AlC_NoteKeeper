@@ -2,6 +2,7 @@ package com.crucial.a2019_alc_notekeeper;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -13,8 +14,12 @@ import android.widget.Spinner;
 import java.util.List;
 
 public class NoteActivity extends AppCompatActivity {
-
     public static final String NOTE_POSITION = "com.crucial.a2019_alc_notekeeper.NOTE_POSITION";
+    public static final String ORIGINAL_NOTE_COURSE_ID = "com.crucial.a2019_alc_notekeeper.ORIGINAL_NOTE_COURSE_ID";
+    public static final String ORIGINAL_NOTE_TITLE = "com.crucial.a2019_alc_notekeeper.ORIGINAL_NOTE_TITLE";
+    public static final String ORIGINAL_NOTE_TEXT = "com.crucial.a2019_alc_notekeeper.ORIGINAL_NOTE_TEXT";
+
+
     public static final int POSTION_NOT_SET = -1;
     private NoteInfo mNote;
     private boolean mIsNewNote;
@@ -23,10 +28,12 @@ public class NoteActivity extends AppCompatActivity {
     private Spinner mSpinnerCourses;
     private int mNotePosition;
     private boolean mIsCancelling;
+    private String mOriginalNoteCourseId;
+    private String mOriginalNoteTitle;
+    private String mOriginalNoteText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -41,7 +48,14 @@ public class NoteActivity extends AppCompatActivity {
 
         adapterCourses.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinnerCourses.setAdapter(adapterCourses);
+        
         readDisplayStateValues();
+
+        if(savedInstanceState == null) {
+            saveOriginalNoteValues();
+        }else {
+            restoreOriginalNoteValues(savedInstanceState);
+        }
 
         mTextNoteTitle = findViewById(R.id.text_note_title);
         mTextNoteText = findViewById(R.id.text_note_text);
@@ -52,6 +66,21 @@ public class NoteActivity extends AppCompatActivity {
 
 
     }
+
+    private void restoreOriginalNoteValues(Bundle savedInstanceState) {
+        mOriginalNoteCourseId = savedInstanceState.getString(ORIGINAL_NOTE_COURSE_ID);
+        mOriginalNoteTitle = savedInstanceState.getString(ORIGINAL_NOTE_TITLE);
+        mOriginalNoteText = savedInstanceState.getString(ORIGINAL_NOTE_TEXT);
+    }
+
+    private void saveOriginalNoteValues() {
+        if(mIsNewNote)
+            return;
+        mOriginalNoteCourseId = mNote.getCourse().getCourseId();
+        mOriginalNoteTitle = mNote.getTitle();
+        mOriginalNoteText = mNote.getText();
+
+        }
 
     private void displayNote(Spinner spinnerCourses, EditText textNoteTitle, EditText textNoteText) {
         List<CourseInfo> courses = DataManager.getInstance().getCourses();
@@ -68,10 +97,27 @@ public class NoteActivity extends AppCompatActivity {
         if(mIsCancelling){
             if(mIsNewNote) {
                 DataManager.getInstance().removeNote(mNotePosition);
+            } else{
+                storePreviousNoteValues();
             }
         }else {
             saveNote();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(ORIGINAL_NOTE_COURSE_ID,mOriginalNoteCourseId);
+        outState.putString(ORIGINAL_NOTE_TITLE,mOriginalNoteTitle);
+        outState.putString(ORIGINAL_NOTE_TEXT,mOriginalNoteText);
+    }
+
+    private void storePreviousNoteValues() {
+        CourseInfo course = DataManager.getInstance().getCourse(mOriginalNoteCourseId);
+        mNote.setCourse(course);
+        mNote.setTitle(mOriginalNoteTitle);
+        mNote.setText(mOriginalNoteText);
     }
 
     private void saveNote() {
