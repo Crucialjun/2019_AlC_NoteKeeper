@@ -1,6 +1,6 @@
 package com.crucial.a2019_alc_notekeeper;
 
-import android.database.Cursor;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -15,7 +15,7 @@ public final class CourseInfo implements Parcelable {
     private final String mTitle;
     private final List<ModuleInfo> mModules;
 
-    public CourseInfo(String courseId, String title, List<ModuleInfo> modules) {
+    CourseInfo(String courseId, String title, List<ModuleInfo> modules) {
         mCourseId = courseId;
         mTitle = title;
         mModules = modules;

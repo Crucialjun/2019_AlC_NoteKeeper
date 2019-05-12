@@ -21,13 +21,13 @@ public final class ModuleInfo implements Parcelable {
     } ;
     private final String mModuleId;
     private final String mTitle;
-    private boolean mIsComplete = false;
+    private boolean mIsComplete;
 
-    public ModuleInfo(String moduleId, String title) {
+    ModuleInfo(String moduleId, String title) {
         this(moduleId, title, false);
     }
 
-    public ModuleInfo(String moduleId, String title, boolean isComplete) {
+    private ModuleInfo(String moduleId, String title, boolean isComplete) {
         mModuleId = moduleId;
         mTitle = title;
         mIsComplete = isComplete;
@@ -65,7 +65,6 @@ public final class ModuleInfo implements Parcelable {
         if (o == null || getClass() != o.getClass()) return false;
 
         ModuleInfo that = (ModuleInfo) o;
-
         return mModuleId.equals(that.mModuleId);
     }
 
