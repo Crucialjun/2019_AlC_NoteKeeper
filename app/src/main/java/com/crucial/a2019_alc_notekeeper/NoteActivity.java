@@ -2,9 +2,9 @@ package com.crucial.a2019_alc_notekeeper;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -14,13 +14,14 @@ import android.widget.Spinner;
 import java.util.List;
 
 public class NoteActivity extends AppCompatActivity {
+    private final String TAG = getClass().getSimpleName();
     public static final String NOTE_POSITION = "com.crucial.a2019_alc_notekeeper.NOTE_POSITION";
     public static final String ORIGINAL_NOTE_COURSE_ID = "com.crucial.a2019_alc_notekeeper.ORIGINAL_NOTE_COURSE_ID";
     public static final String ORIGINAL_NOTE_TITLE = "com.crucial.a2019_alc_notekeeper.ORIGINAL_NOTE_TITLE";
     public static final String ORIGINAL_NOTE_TEXT = "com.crucial.a2019_alc_notekeeper.ORIGINAL_NOTE_TEXT";
 
 
-    public static final int POSTION_NOT_SET = -1;
+    public static final int POSITION_NOT_SET = -1;
     private NoteInfo mNote;
     private boolean mIsNewNote;
     private EditText mTextNoteText;
@@ -64,6 +65,8 @@ public class NoteActivity extends AppCompatActivity {
             displayNote(mSpinnerCourses, mTextNoteTitle, mTextNoteText);
         }
 
+        Log.d(TAG, "onCreate: ");
+
 
     }
 
@@ -95,6 +98,7 @@ public class NoteActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         if(mIsCancelling){
+            Log.i(TAG, "onPause: Cancelling note at position: " + mNotePosition);
             if(mIsNewNote) {
                 DataManager.getInstance().removeNote(mNotePosition);
             } else{
@@ -103,6 +107,8 @@ public class NoteActivity extends AppCompatActivity {
         }else {
             saveNote();
         }
+
+        Log.d(TAG, "onPause: ");
     }
 
     @Override
@@ -128,11 +134,12 @@ public class NoteActivity extends AppCompatActivity {
 
     private void readDisplayStateValues() {
         Intent intent = getIntent();
-        mNotePosition = intent.getIntExtra(NOTE_POSITION, POSTION_NOT_SET);
-        mIsNewNote = mNotePosition == POSTION_NOT_SET;
+        mNotePosition = intent.getIntExtra(NOTE_POSITION, POSITION_NOT_SET);
+        mIsNewNote = mNotePosition == POSITION_NOT_SET;
         if(mIsNewNote) {
             createNewNote();
         }
+        Log.i(TAG, "readDisplayStateValues: MnotePosition: " + mNotePosition);
         mNote = DataManager.getInstance().getNotes().get(mNotePosition);
 
     }
