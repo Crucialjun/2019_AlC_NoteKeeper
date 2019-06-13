@@ -20,6 +20,8 @@
     <string name="open_drawer">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="title_activity_settings">Settings</string>
+    
+    <string name="pref_default_favorite_social">http://plus.google.com</string>
 
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
