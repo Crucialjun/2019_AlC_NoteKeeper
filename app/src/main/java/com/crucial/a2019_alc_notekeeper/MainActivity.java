@@ -1,6 +1,7 @@
 package com.crucial.a2019_alc_notekeeper;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,6 +13,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -23,6 +26,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -75,6 +79,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onResume();
         //mAdapterNotes.notifyDataSetChanged();
         mNoteRecyclerAdapter.notifyDataSetChanged();
+        updateNavHeader();
+
+    }
+
+    private void updateNavHeader() {
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        TextView textUserName = headerView.findViewById(R.id.text_user_name);
+        TextView textEmailAddress = headerView.findViewById(R.id.text_email_address);
+
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        String username = pref.getString("user_display_name","Your Name");
+        String emailAdress = pref.getString("user_email_address","yourname@yourhost.com");
+
+        textUserName.setText(username);
+        textEmailAddress.setText(emailAdress);
+
+
+
     }
 
     private void initializeDisplayContent() {
@@ -153,11 +176,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             displayNotes();
         }else if  (id == R.id.nav_courses){
             displayCourses();
+        }else if (id == R.id.nav_share){
+            handleShare();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void handleShare() {
+        View view = findViewById(R.id.list_items);
+        Snackbar.make(view,"Share to - "
+                + PreferenceManager.getDefaultSharedPreferences(this)
+                .getString("user_social","http://google.com"),Snackbar.LENGTH_LONG).show();
+
     }
 
     @Override
