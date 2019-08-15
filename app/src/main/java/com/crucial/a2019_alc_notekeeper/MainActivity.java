@@ -2,6 +2,7 @@ package com.crucial.a2019_alc_notekeeper;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,11 +40,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private LinearLayoutManager mNotesLayoutManager;
     private CourseRecyclerAdapter mCourseRecyclerAdapter;
     private GridLayoutManager mCoursesLayoutManager;
+    private NoteKeeperOpenHelper mDbOpenHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mDbOpenHelper = new NoteKeeperOpenHelper(this);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -72,6 +76,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void handleSelection(String message) {
         View view = findViewById(R.id.list_items);
         Snackbar.make(view,message,Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mDbOpenHelper.close();
+        super.onDestroy();
+
     }
 
     @Override
@@ -141,6 +152,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mRecyclerItems.setLayoutManager(mCoursesLayoutManager);
         mRecyclerItems.setAdapter(mCourseRecyclerAdapter);
 
+
+
+
         selectNavigationMenuItem(R.id.nav_courses);
 
     }
@@ -148,6 +162,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void displayNotes() {
         mRecyclerItems.setLayoutManager(mNotesLayoutManager);
         mRecyclerItems.setAdapter(mNoteRecyclerAdapter);
+
+        SQLiteDatabase db =  mDbOpenHelper.getReadableDatabase();
+
 
         selectNavigationMenuItem(R.id.nav_notes);
 
