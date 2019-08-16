@@ -131,6 +131,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //            }
 //        });
 
+        DataManager.loadFromDatabase(mDbOpenHelper);
+
         mRecyclerItems = findViewById(R.id.list_items);
         mNotesLayoutManager = new LinearLayoutManager(this);
 
@@ -162,8 +164,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void displayNotes() {
         mRecyclerItems.setLayoutManager(mNotesLayoutManager);
         mRecyclerItems.setAdapter(mNoteRecyclerAdapter);
-
-        SQLiteDatabase db =  mDbOpenHelper.getReadableDatabase();
 
 
         selectNavigationMenuItem(R.id.nav_notes);
