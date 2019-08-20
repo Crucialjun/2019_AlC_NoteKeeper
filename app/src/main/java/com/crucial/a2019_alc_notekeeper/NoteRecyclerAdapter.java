@@ -11,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.crucial.a2019_alc_notekeeper.NoteKeeperDatabaseContract.CourseInfoEntry;
+import com.crucial.a2019_alc_notekeeper.NoteKeeperDatabaseContract.NoteInfoEntry;
+
 public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapter.ViewHolder>{
     private final Context mContext;
     //private final List<NoteInfo> mNotes;
@@ -32,9 +35,9 @@ public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapte
             return;
 
         //Get column indexes from mCursor
-        mCoursePos = mCursor.getColumnIndex(NoteKeeperDatabaseContract.CourseInfoEntry.COLUMN_COURSE_ID);
-        mNoteTitlePos = mCursor.getColumnIndex(NoteKeeperDatabaseContract.NoteInfoEntry.COLUMN_NOTE_TITLE);
-        mIdPos = mCursor.getColumnIndex(NoteKeeperDatabaseContract.NoteInfoEntry._ID);
+        mCoursePos = mCursor.getColumnIndex(CourseInfoEntry.COLUMN_COURSE_TITLE);
+        mNoteTitlePos = mCursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TITLE);
+        mIdPos = mCursor.getColumnIndex(NoteInfoEntry._ID);
 
     }
 

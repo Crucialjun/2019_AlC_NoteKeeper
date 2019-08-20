@@ -12,6 +12,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.crucial.a2019_alc_notekeeper.NoteKeeperDatabaseContract.CourseInfoEntry;
 import com.crucial.a2019_alc_notekeeper.NoteKeeperDatabaseContract.NoteInfoEntry;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -262,23 +263,22 @@ public class MainActivity extends AppCompatActivity
                 public Cursor loadInBackground() {
                     SQLiteDatabase database = mDbOpenHelper.getReadableDatabase();
                     final String[] noteColumns = {
+                            NoteInfoEntry.getQName(NoteInfoEntry._ID),
                             NoteInfoEntry.COLUMN_NOTE_TITLE,
-                            NoteInfoEntry.COLUMN_COURSE_ID,
-                            NoteInfoEntry._ID
+                            CourseInfoEntry.COLUMN_COURSE_TITLE
                     };
 
-                    String noteOrderBy = NoteInfoEntry.COLUMN_COURSE_ID + ","
+                    String noteOrderBy = CourseInfoEntry.COLUMN_COURSE_TITLE + ","
                             + NoteInfoEntry.COLUMN_NOTE_TITLE;
 
                     //note_info JOIN course_info ON note_info.course_id = course_info.course_id
                     String tablesWithJoin = NoteInfoEntry.TABLE_NAME
                             + " JOIN "
-                            + NoteKeeperDatabaseContract.CourseInfoEntry.TABLE_NAME
+                            + CourseInfoEntry.TABLE_NAME
                             + " ON "
-                            + NoteInfoEntry.TABLE_NAME
-                            + "." + NoteInfoEntry.COLUMN_COURSE_ID
+                            + NoteInfoEntry.getQName(NoteInfoEntry.COLUMN_COURSE_ID)
                             + " = "
-                            + NoteKeeperDatabaseContract.CourseInfoEntry.COLUMN_COURSE_ID;
+                            + CourseInfoEntry.getQName(CourseInfoEntry.COLUMN_COURSE_ID);
 
 
                     return database.query(tablesWithJoin,
